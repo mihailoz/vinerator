@@ -43,10 +43,43 @@ public class DataVec {
 
         Schema inputDataSchema = builder.build();
 
+        TransformProcess tp = new TransformProcess.Builder(inputDataSchema).build();
+
+        SparkConf conf = new SparkConf();
+        conf.setMaster("local[*]");
+        conf.setAppName("Vinerator");
+
+        JavaSparkContext sc = new JavaSparkContext(conf);
+
+
+
         File file = new File(filePath);
         RecordReader recordReader = new CSVRecordReader(1, ',');
 
+        JavaRDD<String> stringData = sc.textFile(file.getAbsolutePath());
+
         recordReader.initialize(new FileSplit(file));
+
+        JavaRDD<List<Writable>> parsedInputData = stringData.map(new StringToWritablesFunction(recordReader));
+
+        //Now, let's execute the transforms we defined earlier:
+        JavaRDD<List<Writable>> processedData = SparkTransformExecutor.execute(parsedInputData, tp);
+
+        //For the sake of this example, let's collect the data locally and print it:
+        JavaRDD<String> processedAsString = processedData.map(new WritablesToStringFunction(","));
+
+        List<String> processedCollected = processedAsString.collect();
+        List<String> inputDataCollected = stringData.collect();
+
+
+        System.out.println("\n\n---- Original Data ----");
+        for(String s : inputDataCollected) System.out.println(s);
+
+        System.out.println("\n\n---- Processed Data ----");
+        for(String s : processedCollected) System.out.println(s);
+
+
+        System.out.println("\n\nDONE");
 
         return new RecordReaderDataSetIterator(recordReader, 100,123,5);
     }
