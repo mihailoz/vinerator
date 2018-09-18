@@ -22,10 +22,16 @@ public class Application {
         DataVec dataVec = new DataVec(columnData);
 
         try {
-            new MLPHappinessClassifier(dataVec.loadDataFromFile(args[0]), null);
+            dataVec.loadDataFromFile(args[0]);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+//        try {
+//            new MLPHappinessClassifier(dataVec.loadDataFromFile(args[0]), null);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     public static boolean checkProgramArgs(String[] args) {
