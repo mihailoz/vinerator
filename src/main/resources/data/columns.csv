@@ -145,7 +145,7 @@
 "How many siblings do you have?","Number of siblings","int"
 "Gender","Gender","Female-Male"
 "I am","Left - right handed","Left handed-Right handed"
-"Highest education achieved","Education","Currently a Primary school pupil-Primary school-Secondary school-College/Bachelor degree"
+"Highest education achieved","Education","Currently a Primary school pupil-Primary school-Secondary school-College/Bachelor degree-masters degree-doctorate degree"
 "I am the only child","Only child","No-Yes"
 "I spent most of my childhood in a","Village - town","City-village"
 "I lived most of my childhood in a","House - block of flats","house/bungalow-block of flats"

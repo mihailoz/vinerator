@@ -28,3 +28,5 @@ hs_err_pid*
 src/main/resources/*.csv
 
 target/
+
+src/main/resources/data_transformed/

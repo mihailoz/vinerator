@@ -33,7 +33,7 @@ public class ColumnData {
                     String columnType = split[2].substring(0, split[2].length() - 1).toLowerCase();
 
                     if(!columnType.equals("int")) {
-                        String[] options = columnType.split("-");
+                        String[] options = (columnType + "-none").split("-");
                         Column c = cd.addColumn(columnDescription, columnName, "categorical");
                         c.setOptions(options);
                     } else {
