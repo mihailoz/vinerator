@@ -2,6 +2,7 @@ package rs.kimimaro;
 
 import rs.kimimaro.datavec.ColumnData;
 import rs.kimimaro.datavec.DataVec;
+import rs.kimimaro.datavec.TransformData;
 
 import java.io.File;
 
@@ -17,7 +18,9 @@ public class DataTransform {
         DataVec dataVec = new DataVec(columnData);
 
         try {
-            dataVec.loadDataFromFile(args[0]);
+            dataVec.loadDataFromFile(args[0], true);
+
+            TransformData md = TransformData.create(dataVec, "src/main/resources/data/gender_interests_movies");
         } catch (Exception e) {
             e.printStackTrace();
         }

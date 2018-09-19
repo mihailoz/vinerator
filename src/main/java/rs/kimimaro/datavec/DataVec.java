@@ -35,12 +35,14 @@ public class DataVec {
 
     private ColumnData columnData;
     private DataAnalysis dataAnalysis;
+    private Schema dataSchema;
+    private JavaRDD<List<Writable>> data;
 
     public DataVec(ColumnData cd) {
         columnData = cd;
     }
 
-    public JavaRDD<List<Writable>> loadDataFromFile(String filePath) throws Exception {
+    public JavaRDD<List<Writable>> loadDataFromFile(String filePath, boolean saveToFile) throws Exception {
         Schema.Builder builder = new Schema.Builder();
 
         for(Column column : columnData.getColumns()) {
@@ -113,22 +115,49 @@ public class DataVec {
         //Now, let's execute the transforms we defined earlier:
         JavaRDD<List<Writable>> processedData = SparkTransformExecutor.execute(parsedInputData, tp);
 
-        dataAnalysis = new DataAnalysis(tp.getFinalSchema(), processedData);
+//        dataAnalysis = new DataAnalysis(tp.getFinalSchema(), processedData);
 
-        //For the sake of this example, let's collect the data locally and print it:
-        JavaRDD<String> processedAsString = processedData.map(new WritablesToStringFunction(","));
+        this.data = processedData;
+        this.dataSchema = tp.getFinalSchema();
 
-        processedAsString.coalesce(1).saveAsTextFile("src/main/resources/data_transformed");
 
-        List<String> processedCollected = processedAsString.collect();
+        if(saveToFile) {
+            //For the sake of this example, let's collect the data locally and print it:
+            JavaRDD<String> processedAsString = processedData.map(new WritablesToStringFunction(","));
 
-        System.out.println("\n\n---- Processed Data ----");
-        for(String s : processedCollected) System.out.println(s);
+            processedAsString.coalesce(1).saveAsTextFile("src/main/resources/data_transformed");
+        }
+//        List<String> processedCollected = processedAsString.collect();
 
-        System.out.println("\n\nDONE");
+//        System.out.println("\n\n---- Processed Data ----");
+//        for(String s : processedCollected) System.out.println(s);
+//
+//        System.out.println("\n\nDONE");
 
         return processedData;
     }
 
+    public ColumnData getColumnData() {
+        return columnData;
+    }
 
+    public void setColumnData(ColumnData columnData) {
+        this.columnData = columnData;
+    }
+
+    public Schema getDataSchema() {
+        return dataSchema;
+    }
+
+    public void setDataSchema(Schema dataSchema) {
+        this.dataSchema = dataSchema;
+    }
+
+    public JavaRDD<List<Writable>> getData() {
+        return data;
+    }
+
+    public void setData(JavaRDD<List<Writable>> data) {
+        this.data = data;
+    }
 }
